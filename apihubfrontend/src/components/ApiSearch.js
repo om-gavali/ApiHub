@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
-import "./App.css";
+import api from "../services/api";
+import { logout } from "../services/authService";
+
 
 function ApiSearch() {
 
@@ -32,13 +33,11 @@ function ApiSearch() {
     }
 
     try {
-      const res = await axios.get(
-        `http://localhost:8080/apis/category/${selected}`
-      );
+      const res = await api.get(`/apis/category/${selected}`);
       setApis(res.data);
     } catch (err) {
-      console.error("Error:", err);
-      alert("Error fetching data");
+      console.error(err);
+      alert("Error fetching APIs");
     }
   };
 
@@ -47,9 +46,19 @@ function ApiSearch() {
 
       <h1>API Directory</h1>
 
+      <button
+  className="logout-btn"
+  onClick={() => {
+    logout();
+    window.location.href = "/login";
+  }}
+>
+  Logout
+</button>
+
       {/* Dropdown */}
       <div className="dropdown">
-        <select onChange={handleChange}>
+        <select onChange={handleChange} value={category}>
           <option value="">-- Select Category --</option>
           {categories.map((cat, index) => (
             <option key={index} value={cat}>{cat}</option>
@@ -62,35 +71,15 @@ function ApiSearch() {
         {apis.map((api, index) => (
           <div className="card" key={index}>
 
-            <h2>{api.name}</h2>
+            <h3>{api.name}</h3>
 
             <p className="desc">{api.description}</p>
 
-            <div className="info">
-              <span>Category:</span> {api.category}
-            </div>
+            <p><b>Auth:</b> {api.auth || "None"}</p>
+            <p><b>CORS:</b> {api.cors}</p>
+            <p><b>HTTPS:</b> {api.https ? "Yes" : "No"}</p>
 
-            <div className="info">
-              <span>Auth:</span> {api.auth || "None"}
-            </div>
-
-            <div className="info">
-              <span>CORS:</span> {api.cors}
-            </div>
-
-            <div className="info">
-              <span>HTTPS:</span>
-              <span className="badge https">
-                {api.https ? "Yes" : "No"}
-              </span>
-            </div>
-
-            <a
-              href={api.link}
-              target="_blank"
-              rel="noreferrer"
-              className="link"
-            >
+            <a href={api.link} target="_blank" rel="noreferrer">
               Visit API
             </a>
 
@@ -100,7 +89,7 @@ function ApiSearch() {
 
       {/* No Data */}
       {apis.length === 0 && category && (
-        <div className="no-data">No APIs found for this category</div>
+        <p className="no-data">No APIs found</p>
       )}
 
     </div>

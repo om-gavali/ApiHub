@@ -1,0 +1,123 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #f4f7fb;
+}
+
+/* CONTAINER */
+.container {
+  width: 95%;
+  margin: auto;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* TITLE */
+h1 {
+  margin-bottom: 20px;
+  color: #222;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+  float: right;
+  padding: 8px 15px;
+  margin-bottom: 10px;
+  border: none;
+  background: #dc3545;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* DROPDOWN */
+.dropdown {
+  margin: 20px 0;
+}
+
+select {
+  padding: 10px;
+  width: 250px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* GRID - 5 CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: left;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* TITLE */
+.card h3 {
+  color: #007bff;
+  margin-bottom: 8px;
+}
+
+/* TEXT */
+.card p {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+/* LINK */
+.card a {
+  display: block;
+  margin-top: 10px;
+  padding: 6px;
+  text-align: center;
+  background: #007bff;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.card a:hover {
+  background: #0056b3;
+}
+
+/* NO DATA */
+.no-data {
+  margin-top: 30px;
+  color: #777;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
