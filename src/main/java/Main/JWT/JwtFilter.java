@@ -18,7 +18,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final userRepository userRepository;
 
-    // ✅ Constructor injection
     public JwtFilter(JwtUtil jwtUtil, userRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
@@ -50,11 +49,14 @@ public class JwtFilter extends OncePerRequestFilter {
                                 user.getUsername(),
                                 null,
                                 user.getRoles().stream()
-                                        .map(role -> new org.springframework.security.core.authority.SimpleGrantedAuthority(role))
+                                        .map(role -> new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role))
                                         .toList()
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                 
+                request.setAttribute("userId", user.getId());
             }
         }
 

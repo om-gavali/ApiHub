@@ -10,22 +10,25 @@ import Main.Repository.ApiRepository;
 
 @RestController
 @RequestMapping("/apis")
-@CrossOrigin(origins = "*") // allow React
+@CrossOrigin(origins = "*")
 public class ApiController {
 
     @Autowired
     private ApiRepository repo;
 
-    // Get all APIs
+    
     @GetMapping
     public List<Api> getAllApis() {
         return repo.findAll();
     }
 
-    // Get APIs by category
     @GetMapping("/category/{category}")
     public List<Api> getByCategory(@PathVariable String category) {
-        System.out.println("Category: " + category); // debug
         return repo.findByCategory(category);
+    }
+
+    @GetMapping("/search")
+    public List<Api> search(@RequestParam String keyword) {
+        return repo.search(keyword);
     }
 }

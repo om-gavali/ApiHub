@@ -1,25 +1,25 @@
 import React, { useState } from "react";
-import { register } from "../services/authService";
+import { login } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-
-function Register() {
+import "../styles/Auth.css";
+function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await register(form);
-      alert("Registered successfully");
-      navigate("/login");
+      await login(form);
+      alert("Login successful");
+      navigate("/");
     } catch (err) {
-      alert("Error registering");
+      alert("Invalid credentials");
     }
   };
 
   return (
     <div className="auth-container">
-      <h2>Register</h2>
+      <h2>Login</h2>
 
       <form onSubmit={handleSubmit}>
         <input
@@ -34,10 +34,10 @@ function Register() {
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
 
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );
 }
 
-export default Register;
+export default Login;
