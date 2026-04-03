@@ -9,15 +9,29 @@ export const register = (data) => {
 export const login = async (data) => {
   const res = await axios.post(`${API_URL}/login`, data);
 
-  localStorage.setItem("token", res.data);
+  const { token, role } = res.data;
+
+  if (!token || !role) {
+    throw new Error("Invalid response from server. Missing token or role.");
+  }
+
+  localStorage.setItem("token", token);
+  localStorage.setItem("role", role);
 
   return res.data;
 };
 
 export const getToken = () => {
-  return localStorage.getItem("token");
+  const t = localStorage.getItem("token");
+  return t === "undefined" ? null : t;
+};
+
+export const getRole = () => {
+  const r = localStorage.getItem("role");
+  return r === "undefined" ? null : r;
 };
 
 export const logout = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("role");
 };

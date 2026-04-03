@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { register } from "../services/authService";
-import { useNavigate } from "react-router-dom";
-import "../styles/Auth.css";
+import { useNavigate, Link } from "react-router-dom";
+import "../styles/Register.css";
+
 function Register() {
   const [form, setForm] = useState({ username: "", password: "" });
   const navigate = useNavigate();
@@ -18,24 +19,39 @@ function Register() {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Register</h2>
+    <div className="register-page">
+      <div className="register-container">
+        <div className="register-header">
+          <h2>Create Account</h2>
+          <p>Join Api-Hub today</p>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
-        />
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <input
+              type="text"
+              placeholder="Username"
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              required
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
+          <div className="input-group">
+            <input
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              required
+            />
+          </div>
 
-        <button type="submit">Register</button>
-      </form>
+          <button type="submit" className="register-btn">Sign Up</button>
+        </form>
+
+        <div className="register-footer">
+          <p>Already have an account? <Link to="/login">Sign in</Link></p>
+        </div>
+      </div>
     </div>
   );
 }

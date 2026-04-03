@@ -1,5 +1,5 @@
 /* Center container */
-.auth-container {
+.login-container {
     width: 350px;
     margin: 80px auto;
     padding: 25px;
@@ -11,13 +11,16 @@
 }
 
 /* Heading */
-.auth-container h2 {
+.login-header h2 {
     margin-bottom: 20px;
     color: #333;
 }
+.login-header p {
+    color: #555;
+}
 
 /* Inputs */
-.auth-container input {
+.login-container input {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -27,17 +30,17 @@
 }
 
 /* Focus effect */
-.auth-container input:focus {
+.login-container input:focus {
     border-color: #007bff;
     outline: none;
 }
 
 /* Button */
-.auth-container button {
+.login-btn {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    background-color: blue;
+    background: blue; /* overrides global background gradients */
     color: white;
     border: none;
     border-radius: 6px;
@@ -46,11 +49,11 @@
 }
 
 /* Button hover */
-.auth-container button:hover {
-    background-color: darkblue;
+.login-btn:hover {
+    background: darkblue;
 }
 
-/* Optional background */
-body {
-    background-color: #f5f7fa;
+/* Footer link */
+.login-footer {
+    margin-top: 15px;
 }

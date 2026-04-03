@@ -1,9 +1,9 @@
 package Main.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import Main.Entity.user;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import Main.Entity.User;
 
-public interface userRepository extends JpaRepository<user, Long> {
-    Optional<user> findByUsername(String username);
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUsername(String username);
 }

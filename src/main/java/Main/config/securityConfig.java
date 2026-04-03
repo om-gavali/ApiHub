@@ -1,24 +1,29 @@
 package Main.config;
 
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.*;
-import org.springframework.security.crypto.bcrypt.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.*;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.*;
 
 import Main.JWT.JwtFilter;
-import Main.Repository.userRepository;
+import Main.Repository.UserRepository;
+
+import java.util.List;
 
 @Configuration
 public class securityConfig {
 
     private final JwtFilter jwtFilter;
-    private final userRepository userRepository;
+    private final UserRepository userRepository;
 
-    public securityConfig(JwtFilter jwtFilter, userRepository userRepository) {
+    public securityConfig(JwtFilter jwtFilter, UserRepository userRepository) {
         this.jwtFilter = jwtFilter;
         this.userRepository = userRepository;
     }
@@ -26,10 +31,15 @@ public class securityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
-                .map(user -> org.springframework.security.core.userdetails.User
-                        .withUsername(user.getUsername())
-                        .password(user.getPassword())
-                        .roles(user.getRoles().toArray(new String[0]))
+                .map(u -> org.springframework.security.core.userdetails.User
+                        .withUsername(u.getUsername())
+                        .password(u.getPassword())
+                        .authorities(
+                                u.getRoles().stream()
+                                        .map(role -> "ROLE_" + role)
+                                        .map(org.springframework.security.core.authority.SimpleGrantedAuthority::new)
+                                        .toList()
+                        )
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
@@ -40,36 +50,39 @@ public class securityConfig {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/apis/**").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/favorites/**").hasAnyRole("USER","ADMIN") // ✅ added
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            );
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                	    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                	    .requestMatchers("/auth/**").permitAll()
+                	    .requestMatchers("/apis/**").hasRole("USER")
+                	    .requestMatchers("/admin/**").hasRole("ADMIN")
+                	    .requestMatchers("/favorites/**").hasRole("USER")
+                	    .anyRequest().authenticated()
+                	)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-        org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
-
-        config.setAllowedOrigins(java.util.List.of("http://localhost:3000"));
-        config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE"));
-        config.setAllowedHeaders(java.util.List.of("*"));
-        config.setAllowCredentials(true);
-
-        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
     }
 }

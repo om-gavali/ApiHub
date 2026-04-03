@@ -1,0 +1,57 @@
+.admin-container {
+    padding: 20px;
+    position: relative;
+}
+
+.admin-links {
+    display: flex;
+    gap: 20px;
+}
+
+.admin-links a {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.logout-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 25px;
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #c9302c;
+}

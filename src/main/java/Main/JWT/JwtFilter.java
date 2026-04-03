@@ -1,62 +1,75 @@
 package Main.JWT;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import Main.Repository.userRepository;
-import Main.Entity.user;
-
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final userRepository userRepository;
 
-    public JwtFilter(JwtUtil jwtUtil, userRepository userRepository) {
+    public JwtFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.userRepository = userRepository;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                   HttpServletResponse response,
-                                   FilterChain filterChain)
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
+    	
+    	
 
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
 
+        // ✅ Extract token
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            username = jwtUtil.getUsername(token);
+            username = jwtUtil.extractUsername(token);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            user user = userRepository.findByUsername(username).orElse(null);
+            if (jwtUtil.validateToken(token)) {
 
-            if (user != null && jwtUtil.validateToken(token)) {
+                List<String> roles = jwtUtil.extractRoles(token);
+
+                var authorities = roles.stream()
+                        .map(role -> "ROLE_" + role)
+                        .map(org.springframework.security.core.authority.SimpleGrantedAuthority::new)
+                        .toList();
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                user.getUsername(),
+                                username,
                                 null,
-                                user.getRoles().stream()
-                                        .map(role -> new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role))
-                                        .toList()
+                                authorities
                         );
 
+                // 🔥 VERY IMPORTANT LINE (MISSING BEFORE)
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+
+                // ✅ Set authentication
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                 
-                request.setAttribute("userId", user.getId());
+                // 🔍 Debug
+                System.out.println("AUTH SET SUCCESS for: " + username);
+                System.out.println("ROLES: " + roles);
             }
         }
 

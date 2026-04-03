@@ -1,0 +1,77 @@
+.top-apis-container {
+  margin: 30px auto;
+  max-width: 1000px;
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+}
+
+.top-apis-container h3 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 22px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.top-apis-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.top-api-card {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 4px solid #ff4757;
+}
+
+.top-api-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.rank {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ff4757;
+  min-width: 50px;
+}
+
+.api-info {
+  flex-grow: 1;
+}
+
+.api-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  color: #2c3e50;
+}
+
+.visit-count {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.visit-btn {
+  background: linear-gradient(135deg, #2196f3, #0b79d0);
+  color: white;
+  text-decoration: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.visit-btn:hover {
+  background: linear-gradient(135deg, #0b79d0, #095a9d);
+  transform: scale(1.05);
+}
